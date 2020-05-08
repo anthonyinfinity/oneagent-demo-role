@@ -1,0 +1,61 @@
+---
+## use env specific var in inventory to keep env urls separate
+#
+#
+### agent script variables passed to the cmdline
+# primary group for OneAgent processes, defaults to the value of USER
+dynatrace_host_group_name: "{{ dev | default('dev') }}"
+dynatrace_app_log_content_access: "{{ 0 | default('0') }}"
+dynatrace_infra_only: "{{ 0 | default('0') }}"
+dynatrace_non_root_mode: "{{ 1 | default('1') }}"
+# (Early adopter) Enables non-privileged mode. For details, see: https://www.dynatrace.com/support/help/shortlink/root-privileges#linux-non-root-mode"
+# The name of the unprivileged user for OneAgent processes.
+dt_user: "{{ dtuser | default('dtuser') }}"
+dt_group: "{{ dtuser | default('dtuser') }}"
+### Copies installer script from local. Checks files folder or otherwise use an absolute path.
+oneagent_installer_script: "Dynatrace-OneAgent-Linux-1.173.358.sh"
+with_installer_script_supplied: "{{ False | default('False') }}"
+### Set this value to download from dt custer if so then Set oneagent_installer_script: to "".
+# Leave both values in repo, automated testing runs both scenarios
+oneagent_installer_script_download_url: "https://dtmpoc.redoceangroup.eu/e/b9a433cf-bf2a-40c3-9dc6-326b1f1b9faa/api/v1/deployment/installer/agent/unix/default/latest?Api-Token=fpXZQPRkTYiSIt9OHHcKI&arch=x86&flavor=default"
+download_installer_script_url: "{{ False | default('True') }}"
+#
+#
+# agent watchd ports
+oneagent_watch_ports:
+  - 50000
+  - 50001
+  - 50002
+  - 50003
+#
+#
+# agent start installation and startup logs
+oneagent_lib_path: "/opt/dynatrace/oneagent/agent/lib64/liboneagentos.so"
+service_log: "/opt/dynatrace/oneagent/log/installer/service.log"
+service_log_msg: "Dynatrace OneAgent service started"
+## Installation under custom path or with /opt being a symlink when SELinux is enabled
+## requires semanage to be available for the purpose of assigning persistent security
+## contexts to Dynatrace OneAgent files and directories.
+#
+#
+# Parent Directories used in to form paths
+oneagent_temp_script: "dynatrace-oneagent.sh"
+dynatrace_root_dir_name: "/opt"
+dynatrace_dir_name: "dynatrace"
+oneagent_dir_name: "oneagent"
+#
+#
+# Paths where stuff is {/opt/dynatrace/oneagent,/opt/dynatrace/,/var/lib/dynatrace}
+dynatrace_oneagent_install_path: "{{ dynatrace_root_dir_name }}/{{ dynatrace_dir_name }}/{{ oneagent_dir_name }}"
+dynatrace_dir_path: "{{ dynatrace_root_dir_name }}/{{ dynatrace_dir_name }}"
+dynatrace_lib_path: "/var/lib/{{ dynatrace_dir_name }}"
+#
+#
+# if True rolls back.
+uninstall_dynatrace_oneagent: "{{ False | default('False') }}"
+#
+# Backwards compatibility:
+download_installer_script_tid: "{{ False | default('False') }}"
+dynatrace_oneagent_cluster_subdomain:
+dynatrace_oneagent_environment_id:
+dynatrace_oneagent_tenant_token:

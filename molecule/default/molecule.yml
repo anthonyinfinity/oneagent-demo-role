@@ -1,0 +1,44 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint: |
+    yamllint .
+    ansible-lint
+    flake8
+platforms:
+  - name: instance
+    image: "anthonykalinde/centos7-ansible"
+    privileged: true
+    cap_add: SYS_ADMIN
+    volume_mounts: '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+    command: '/lib/systemd/systemd'
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    pre_build_image: true
+provisioner:
+  name: ansible
+  log: true
+  options:
+    vvv: true
+  lint:
+    name: ansible-lint
+  playbooks:
+    converge: converge.yml
+scenario:
+  name: default
+  test_sequence:
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - check
+    - verify
+    - destroy
+verifier:
+  name: testinfra
+  lint:
+    name: flake8

@@ -1,0 +1,12 @@
+---
+- name: Run Installer for detected ansible system
+  include: "{{ ansible_system }}-install.yml"
+  tags:
+    - config
+    - install
+
+- name: Run UNinstaller for detected ansible system
+  include: "{{ ansible_system }}-uninstall.yml"
+  when: uninstall_dynatrace_oneagent == True
+  tags:
+    - uninstall

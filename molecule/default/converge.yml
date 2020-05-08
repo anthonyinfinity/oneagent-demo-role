@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include oneagent-demo-role"
+      include_role:
+        name: "oneagent-demo-role"
